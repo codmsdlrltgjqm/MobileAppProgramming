@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/menu_search"
+        android:title="search"
+        app:actionViewClass="androidx.appcompat.widget.SearchView"
+        app:showAsAction="always"/> <!--액션바에서 항상 보여져야하는 것, 기본값은 never(오버플로 메뉴로 출력)-->
+    <item
+        android:id="@+id/item1"
+        android:title="아이템1"/>
+    <item
+        android:id="@+id/item2"
+        android:title="아이템2"/>
+    <item
+        android:id="@+id/item3"
+        android:title="아이템3"/>
+    <item
+        android:id="@+id/item4"
+        android:title="아이템4"/>
+
+</menu>

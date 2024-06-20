@@ -1,0 +1,373 @@
+<뷰 바인딩 설정하는 법>
+1. build.gradle.kts (Module:app)
+
+viewBinding{
+    enable = true
+}
+
+추가
+
+2. MainActivity.kt
+override fun onCreate(savedInstanceState: Bundle?)함수 내 추가
+
+var binding = ActivityMainBinding.inflate(layoutInflater)
+setContentView(binding.root)
+-------------------------------------------------------------
+lateinit var binding : ActivityMainBinding
+
+binding = ActivityMainBinding.inflate(layoutInflater) // 이거 있어야함!
+setContentView(binding.root)
+
+
+
+
+<1. ActionBar 제거 관련>
+- res/values/themes/themes.xml에서 .NoActionBar 삭제
+
+
+
+
+< 2. DrawerLayout 화면 구성>
+- 자식 레이아웃 중 하나를 펼치고 접는 기능을 하게 해주는 레이아웃
+- 자식 레이아웃 중 하나에 layout_gravity 속성을 start(left)나 end(right)를 부여하기
+- 단, layout_gravity 속성을 가진 자식 레이아웃은 하나여야 하고 layout_height은 match_parent가 되어야 한다.
+-> activity_main.xml에서 android:fitsSystemWindows="true" 추가
+
+
+<3. Drawer 화면에 NavigationView를 배치해라>
+=> build.gradle.kts(app)에서 implementation("androidx.appcompat:appcompat:1.6.1") 추가
+1. res/menu/menu_main.xml (=menu_provider) 만들기
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/info"
+        android:title="덕성여자대학교"
+        android:icon="@android:drawable/ic_menu_info_details" />
+
+    <item
+        android:id="@+id/call"
+        android:title="긴급(119)전화하기"
+        android:icon="@android:drawable/ic_menu_call" />
+
+    <item
+        android:id="@+id/map"
+        android:title="지도 보기"
+        android:icon="@android:drawable/ic_menu_mapmode" />
+</menu>
+
+2. MainActivity.kt
+override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_main, menu) //R.menu 다음엔 파일 이름 작성하면 o
+        return super.onCreateOptionsMenu(menu)
+    }
+작성
+
+3. res/layout/navigation_header.xml추가 -> 드로어 안에서 위에 보여질 화면
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="200dp"
+    android:background="#FF0000">
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="140dp"
+        android:layout_height="140dp"
+        android:padding="19dp" //패딩
+        android:layout_centerVertical="true" //부모의 세로 방향 중앙에 맞춤, centerInParent -> 부모의 가로세로 중앙에 맞춤
+        android:src="@drawable/duksae"
+        tools:srcCompat="@tools:sample/avatars" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/imageView" //imageView를 기준으로 오른쪽 배치
+        android:layout_centerVertical="true"
+        android:textColor="@color/white"
+        android:textSize="15dp"
+        android:textStyle="bold"
+        android:text="이채은\n 20220969@duksung.ac.kr" />
+
+</RelativeLayout>
+
+
+
+
+<4. 3개의 프래그먼트를 만들고 배경색 다르게 하기>
+1. kotlin+java/com.example.Mid20220969/OneFragment, TwoFragment, ThreeFrament 파일 추가
+    - Fragment(blank) 이용
+2. android:background="#ffff00" 배경색 변경 -> layout 쪽에
+
+
+
+
+
+
+<5.6 화면은 AppBar와 ViewPager2 수직으로 배치 & AppBar에 ToolBar와 ImageView, TabLayout 배치>
+- build.gradle.kts(app)에서 implementation("androidx.viewpager2:viewpager2:1.0.0")
+- activity_main.xml에서
+<LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center_vertical"
+        >
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/appbar">
+
+            <androidx.appcompat.widget.Toolbar // 툴바 배치
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/toolbar" />
+
+            <ImageView // 이미지 뷰 배치
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:src="@drawable/duksae"/>
+
+
+            <com.google.android.material.tabs.TabLayout // 탭 배치
+                android:id="@+id/tabs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <androidx.viewpager2.widget.ViewPager2
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:id="@+id/viewpager"/>
+    </LinearLayout>
+
+
+<7. Toolbar를 ActionBar로 이용>
+- MainActivity.kt에서
+override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        // setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater) // 이거 있어야함!
+        setContentView(binding.root)
+
+        setSupportActionBar(binding.toolbar) // 툴바를 액션바로 설정
+
+
+
+
+<8. ActionBarDrawerToggle을 이용해 Drawer와 연결>
+- MainActivity.kt에서
+class MainActivity : AppCompatActivity() , NavigationView.OnNavigationItemSelectedListener{
+    lateinit var binding : ActivityMainBinding
+    lateinit var toggle : ActionBarDrawerToggle // ActionBarDrawerToggle 타입을 가지고 있는 변수 선언
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+            super.onCreate(savedInstanceState)
+            // setContentView(R.layout.activity_main)
+            binding = ActivityMainBinding.inflate(layoutInflater) // 이거 있어야함!
+            setContentView(binding.root)
+
+            setSupportActionBar(binding.toolbar) // 툴바를 액션바로 설정
+
+            // --- 토글 관련
+            toggle = ActionBarDrawerToggle(this, binding.drawer, R.string.drawer_opened, R.string.drawer_closed)
+            // 여기서 3번째 인자는 open 했을 때 나오는 string, 4번째 인자는 close 했을 때 나오는 string
+
+            supportActionBar?.setDisplayHomeAsUpEnabled(true)
+            toggle.syncState() // 상태
+
+ - res/values/strings.xml
+ <resources>
+     <string name="app_name">Prac1</string>
+     <!-- TODO: Remove or change this placeholder text -->
+     <string name="hello_blank_fragment">Hello blank fragment</string>
+     <string name="drawer_opened">Opened Drawer</string>
+     <string name="drawer_closed">Closed Drawer</string>
+ </resources>
+
+
+
+
+<9. FragmentStateAdapter를 이용해 3개의 fragment 관리>
+- MainActivity.kt의 onCreate(savedInstanceState: Bundle?) 위에
+class MyFragmentPagerAdapter(activity: FragmentActivity): FragmentStateAdapter(activity){
+        val fragments : List<Fragment>
+        init{
+            fragments =
+                listOf(OneFragment(), TwoFragment(), ThreeFragment()) // 총 3개의 fregment를 리스트로 담고 있다
+        }
+
+        // 반드시 포함해야하는 오버라이드 함수 -> getItemCount()
+        override fun getItemCount(): Int {
+            return fragments.size
+        }
+        // 반드시 포함해야하는 오버라이드 함수 -> createFragment()
+        override fun createFragment(position: Int): Fragment {
+            // position -> 0-> onefragment 1-> two 2-> three ...
+            return fragments[position]
+        }
+    }
+
+- MainActivity.kt의 onCreate()함수 안에
+// 프래그먼트 어댑터 생성
+        val fragmentAdapter = MyFragmentPagerAdapter(this)
+        binding.viewpager.adapter = fragmentAdapter
+
+
+
+<10. TabLayoutMediator를 이용해 3개의 Fragment 관리>
+- MainActivity.kt의 onCreate()함수의 프래그먼트 어댑터 아래에
+ // TabLayout과 ViewPager2 연결
+        TabLayoutMediator(binding.tabs, binding.viewpager) { tab, position ->
+            tab.text = "TAB ${position + 1}"
+        }.attach()
+
+
+ <11. OptionMenu를 이용해 로그인과 검색 메뉴를 추가>
+ - res/menu/menu_navigation.xml 추가
+ <?xml version="1.0" encoding="utf-8"?>
+ <menu xmlns:android="http://schemas.android.com/apk/res/android"
+     xmlns:app="http://schemas.android.com/apk/res-auto">
+     <item
+         android:id="@+id/menu_search"
+         android:title="search"
+         app:actionViewClass="androidx.appcompat.widget.SearchView"
+         android:icon="@android:drawable/ic_menu_search"
+         app:showAsAction="always"/> // 항상 보이도록
+     <!-- "android.widget.SearchView" -->
+     <item
+         android:id="@+id/login"
+         android:title="로그인"
+         app:showAsAction="ifRoom"/> <!-- 공간있을 때 보여주기~ -->
+ </menu>
+
+- MainActivity.xml에서
+// Option 메뉴를 위한 오버라이드 (menu를 다루고 있음)
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_navigation, menu)
+        // 여기서 R은 리소스를 뜻한다.
+        // 지금까지는 menu_navigation만 있으면 되는데 뷰를 가지고 있는 메뉴에 대한 부분 -> 따로 관리해줘야 함
+        return super.onCreateOptionsMenu(menu)
+    }
+
+
+
+ <12. '검색' 메뉴를 클릭하면 SearchView를 연결>
+
+- MainActivity.xml의 onCreateOptionsMenu 함수 안의 menuInflater.inflate 아래에
+val searchView = menu?.findItem(R.id.menu_search)?.actionView as SearchView
+        // (menu: Menu?) -> menu? 라는 뜻은 null도 가능하다는 뜻이므로 변수 선언할 때 menu?로 적어둬야 함
+        // 코틀린에서 캐스팅 해줄 때는 뒤에 as ~ 로 작성해야함
+        // 여기서는 searchView로 캐스팅 해줄게용!
+        // 근데 SearchView는 multi class이므로 우리는 androidX에서 제공하는 SearchView로 임포트!
+
+ 추가
+
+
+
+
+ <13. SearchView에 검색어 입력 완료하면 커스텀 다이얼로그를 보여줌>
+ - res/layout/custom_dialog.xml 파일 생성후
+ <?xml version="1.0" encoding="utf-8"?>
+ <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+     android:layout_width="wrap_content"
+     android:layout_height="wrap_content"
+     android:layout_gravity="center"
+     android:orientation="horizontal">
+
+     <TextView
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+
+         android:id="@+id/textView1"
+         android:text="검색어" />
+
+     <TextView
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+
+         android:id="@+id/textView2" />
+
+     <TextView
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+
+         android:id="@+id/textView3"
+         android:text="을/를 입력하였습니다" />
+
+ </LinearLayout>
+
+
+ - MainActivity.xml의 onCreateOptionsMenu 함수 안의 val searchView 아래에
+
+ val activityContext = this //dialog 생성시 this를 사용하기 위해 context 객체를 변수로 받음
+         // 검색(Query)하는 이벤트 처리 해주는 코드 작성해볼게요
+         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
+             // 오버라이드 작성
+             override fun onQueryTextSubmit(query: String?): Boolean {
+                 // 사용자가 입력한 검색어를 커스텀 다이얼로그에 표시
+
+                     val dialogBinding = CustomDialogBinding.inflate(layoutInflater)
+
+                     // 검색어를 나타내는 TextView들에 사용자가 입력한 검색어 설정
+                     dialogBinding.textView2.text = "$query"
+                     dialogBinding.textView2.setTextColor(Color.RED)
+
+                     // 다이얼로그 생성 후 표시
+                     val customDlg = AlertDialog.Builder(activityContext).run{//변수로 받음 activityContext(=this)넣음
+                         setTitle("검색어 입력 화면")
+                         setIcon(android.R.drawable.ic_dialog_alert)
+                         setView(dialogBinding.root)
+                         setNegativeButton("닫기", DialogInterface.OnClickListener { dialog, which ->
+                             if (which == DialogInterface.BUTTON_NEGATIVE){
+                                 Log.d("mobileapp", "BUTTON_NEGATIVE")
+                             }
+                         })
+                         create()
+                     }
+                     customDlg.show()
+
+
+                 Toast.makeText(applicationContext, "$query 검색합니다.", Toast.LENGTH_LONG).show()
+                 // 원래 첫번째 인자로 mainActivity 타입이 들어가야 하는데 현재 this는 searchView 타입임
+                 // 이런 경우에는 this가 아닌 applicationContext 로 대체
+
+                 return true
+
+             }
+
+             override fun onQueryTextChange(newText: String?): Boolean {
+                 // 텍스트가 바뀔 때 마다 (키보드를 입력할 때 마다) 검색어의 내용이 변경되는 이벤트 처리
+                 return true
+             }
+         })
+
+
+
+
+ <14. '로그인'메뉴를 클릭하면 Toast를 보임>
+ - MainActivity.xml의 onCreateOptionsMenu 함수 아래에 추가
+
+ override fun onOptionsItemSelected(item: MenuItem): Boolean {
+         if (toggle.onOptionsItemSelected(item)) {
+             return true
+         }
+         return when (item.itemId) {
+             R.id.login -> {
+                 val toast = Toast.makeText(this, "개발중입니다.", Toast.LENGTH_LONG)
+                 toast.show()
+                 true
+             }
+             else -> super.onOptionsItemSelected(item)
+         }
+     }
+
+
+
+

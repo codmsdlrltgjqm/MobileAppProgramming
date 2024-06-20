@@ -1,0 +1,155 @@
+<1. 배치> : fragment_two.xml
+-> ExtendedFloatingActionButton: 누르면 SecondActivity와 연결
+->
+<2. RecyclerView 배치> : item_recyclerview.xml
+
+<3. Adater클래스 만들기>
+- Adapter.kt <-> itemRecyclerview.xml과 연결
+    - onCreateViewHolder, onBindViewHolder, getItemCount override
+    - val binding = ItemRecyclerviewBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+      return MyViewHolder(binding)
+    - override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
+              val data = datas[position]
+              val parts = data.split("\n")
+
+              if (parts.size >= 2) {
+                  holder.binding.itemData1.text = parts[0]
+                  holder.binding.itemData2.text = parts[1]
+              }
+          }
+
+<4. SecondActivity 생성> - SecondActivity.kt, activity_second.xml
+- activity_second.xml
+  - LinearLayout으로 배치함LinearLayout으로 배치함
+
+- Manifest.xml에
+<activity
+            android:name=".SecondActivity"
+            android:parentActivityName=".MainActivity"
+            android:exported="false" />
+        <activity
+            android:name=".MainActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        추가
+
+
+
+
+<7. FloatingActionButton을 클릭하면 SecondActivity 실행>
+- TwoFragment.kt
+// FloatingActionButton 클릭 이벤트 설정
+        binding.mainFab.setOnClickListener {
+            val intent = Intent(requireContext(), SecondActivity::class.java)
+
+            // 라디오 그룹 내의 체크된 라디오 버튼을 찾아 해당 텍스트를 인텐트에 추가
+            val radiotext = if (binding.radioFriend.isChecked) {
+                binding.radioFriend.text.toString()
+            } else {
+                binding.radioPlace.text.toString()
+            }
+
+            //SecondActivity.kt에 radiotext라는 이름으로 체크박스로 선택된 값 보내는 거
+            intent.putExtra("radiotext", radiotext)
+
+            // SecondActivity 실행
+//            startActivity(intent)
+            requestLauncher.launch(intent)
+        }
+
+<8. SecondActivity는 전달받은 값을 이용하여 제목을 출력> - SecondActivity.kt
+// 전달받은 값을 가져옴
+        val receivedText = intent.getStringExtra("radiotext")
+
+        // 전달받은 값을 제목으로 설정
+        val titleTextView = findViewById<TextView>(R.id.add_title)
+        titleTextView.text = "$receivedText 추가하기"
+
+<9. SecondActivity는 Button을 클릭하면 이름 EditText에 입력된 내용에 '[친구]' 또는 '[장소]'를 연결하고 전화번호 EditText에 입력된 내용과 함께 반환하고 종료>
+- SecondActivity.kt
+val binding = ActivitySecondBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+
+binding.submitArea.setOnClickListener {
+            val phoneNumber = binding.phonenumber.text.toString()
+            val name = binding.nameText.text.toString()
+
+            // 선택된 옵션에 따라서 '[친구]' 또는 '[장소]'를 추가
+            val selectedOption = intent.getStringExtra("radiotext") ?: "" // 기본값은 빈 문자열
+            val nameWithType = if (selectedOption == "친구") {
+                "[친구] $name"
+            } else if (selectedOption == "장소") {
+                "[장소] $name"
+            } else {
+                name // 선택된 옵션이 없는 경우에는 이름만 반환
+            }
+
+            // 이름과 전화번호를 함께 반환
+            val intent = Intent()
+            intent.putExtra("name", nameWithType)
+            intent.putExtra("phoneNumber", phoneNumber)
+            setResult(Activity.RESULT_OK, intent)
+
+            finish()
+        }
+        true
+                }
+
+        override fun onSupportNavigateUp(): Boolean {
+                val intent = intent
+                setResult(Activity.RESULT_OK, intent)
+                finish()
+                return true
+            }
+
+<10. Fragment는 SecondActivity에서 반환된 2개의 String을 하나의 스트링으로 연결해 RecyclerView의 데이터에 추가하고 RecyclerView를 변경>
+- TwoFragment.kt
+binding = FragmentTwoBinding.inflate(inflater, container, false)
+
+        datas = savedInstanceState?.getStringArrayList("datas")?.toMutableList() ?: mutableListOf()
+
+        binding.recyclerView.addItemDecoration(
+            // 수평선으로 구별해주는
+            DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL)
+        )
+
+        val adapter = Adapter(datas)
+
+
+        // ActivityResultLauncher 등록
+        val requestLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val data = result.data
+                val phoneNumber = data?.getStringExtra("phoneNumber")
+                val name = data?.getStringExtra("name")
+                val combinedResult = "$name\n$phoneNumber"
+                datas.add(combinedResult)
+                adapter.notifyDataSetChanged() // RecyclerView 갱신
+            }
+        }
+
+// RecyclerView 설정
+        val layoutManager = LinearLayoutManager(requireContext())
+        binding.recyclerView.layoutManager = layoutManager
+        binding.recyclerView.adapter = adapter
+
+        return binding.root
+    }
+
+<11. Fragment에서 사용된 RecyclerView의 데이터를 InstanceState로 관리>-  TwoFragment.kt
+datas = savedInstanceState?.getStringArrayList("datas")?.toMutableList() ?: mutableListOf()
+
+
+<12. RecyclerView의 layoutManager와 adapter 설정> - TwoFragment.kt
+override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putStringArrayList("datas", ArrayList(datas))
+    }
+

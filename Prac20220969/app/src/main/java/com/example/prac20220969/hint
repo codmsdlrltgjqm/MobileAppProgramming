@@ -1,0 +1,23 @@
+<뷰 바인딩 설정하는 법>
+1. build.gradle.kts (Module:app)
+
+viewBinding{
+    enable = true
+}
+
+추가
+
+2. MainActivity.kt
+override fun onCreate(savedInstanceState: Bundle?)함수 내 추가
+
+var binding = ActivityMainBinding.infalte(layoutInflater)
+setContentview(binding.root)
+
+<ActionBar 관련>
+- res/values/themes/themes.xml에서 .NoActionBar 삭제
+
+<DrawerLayout 화면 구성>
+- 자식 레이아웃 중 하나를 펼치고 접는 기능을 하게 해주는 레이아웃
+- 자식 레이아웃 중 하나에 layout_gravity 속성을 start(left)나 end(right)를 부여하기
+- 단, layout_gravity 속성을 가진 자식 레이아웃은 하나여야 하고 layout_height은 match_parent가 되어야 한다.
+-> activity_main.xml에서 android:fitsSystemWindows="true" 추가

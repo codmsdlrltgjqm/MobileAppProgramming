@@ -1,0 +1,89 @@
+- 찾을 수 없는 객체?
+ -> 패키지명 확인, 패키지 코드 있는지 확인, rebuild, cleand 프로젝트
+
+- RalativeLayout
+android:layout_above: 기준 뷰의 위쪽에 배치
+android:layout_below: 기준 뷰의 아래쪽에 배치
+android:layout_toLeftOf : 기준 뷰의 왼쪽에 배치
+android:layout_toRightOf : 기준 뷰의 오른쪽에 배치
+버튼을 이미지 뷰 오른쪽에 배치하려면, android:layout_toRightOf
+
+android:layout_alignTop : 기준 뷰와 위쪽을 맞춤
+android:layout_alignBottom : 기준 뷰와 아래쪽을 맞춤
+android:layout_alignLeft : 기준 뷰와 왼쪽을 맞춤
+android:layout_alignRight : 기준 뷰와 오른쪽을 맞춤
+android:layout_alignBaseline : 기준 뷰와 텍스트 기준선을 맞춤
+
+
+android:layout_alignParentTop : 부모의 위쪽에 맞춤
+android:layout_alignParentBottem : 부모의 아래쪽에 맞춤
+android:layout_alignParentLeft : 부모의 왼쪽에 맞춤
+android:layout_alignParentRight : 부모의 오른쪽에 맞춤
+android:layout_centerHorizontal : 부모의 가로 방향 중앙에 맞춤
+android:layout_centerVertical : 부모의 세로 방향 중앙에 맞춤
+android:layout_centerInParent : 부모의 가로, 세로 중앙에 맞춤
+
+
+- LinearLayout
+뷰 여러개로 여백을 나누어 채우기
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="BUTTON1"
+        android:layout_weight="1"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="BUTTON2"
+        android:layout_weight="3"/>
+
+</LinearLayout>
+android:layout_weight="1", android:layout_weight="3" 각각의 버튼을 1/4, 3/4씩 차지
+
+gravity의 정렬 대상은 콘텐츠
+layout_gravity의 정렬 대상은 뷰인 것을 알 수 있음
+
+layout_gravity의 속성값을 center_vertical값으로 지정하면 정렬이 안됨
+
+LinearLayout 자체가 방향으로 뷰를 배치하는 레이아웃으로
+LinearLayout의 orientation 속성에 설정한 방향과 같은 방향으로는 적용 안됨
+
+뷰를 LinearLayout 영역의 가운데로 정렬하려면
+레이아웃에 gravity="center"로 설정하면 됨
+
+3. Constraint Layout
+app:layout_constraintTop_toTopOf="@id/view"	<!-- view의 상단과 현재 view의 상단을 맞춤 -->
+app:layout_constraintBottom_toBottomOf="@id/view"	<!-- view의 하단과 현재 view의 하단을 맞춤 -->
+app:layout_constraintLeft_toLeftOf="@id/view"	<!-- view의 왼쪽과 현재 view의 왼쪽을 맞춤 -->
+app:layout_constraintStart_toStartOf="@id/view"	<!-- view의 시작과 현재 view의 시작을 맞춤 -->
+app:layout_constraintRight_toRightOf="@id/view" <!-- view의 오른쪽과 현재 view의 오른쪽을 맞춤 -->
+app:layout_constraintEnd_toEndOf="@id/view"	<!-- view의 끝과 현재 view의 끝을 맞춤 -->
+app:layout_constraintLeft_toRightOf="@id/view"	<!-- view의 오른쪽과 현재 view의 왼쪽을 맞춤 -->
+app:layout_constraintStart_toEndOf="@id/view"	<!-- view의 끝과 현재 view의 시작점을 맞춤 -->
+app:layout_constraintRight_toLeftOf="@id/view" <!-- view의 왼쪽과 현재 view의 왼쪽을 맞춤 -->
+app:layout_constraintEnd_toStartOf="@id/view"	<!-- view의 시작과 현재 view의 끝을 맞춤 -->
+
+app:layout_constraintBaseLine_toBaseLineOf="@id/view"	<!-- view의 기본라인과 현재 view의 기본라인을 맞춤 -->
+app:layout_constraintBaseLine_toTopOf="@id/view"	<!-- view의 상단과 현재 view의 기본라인을 맞춤 -->
+app:layout_constraintBaseLine_toBottomOf="@id/view"	<!-- view의 하단과 현재 view의 기본라인을 맞춤 -->
+
+4. GridLayout
+<!-- GridLayout의 속성 -->
+android:rowCount="3"				<!-- 로우의 개수 지정 -->
+android:columnCount="3"				<!-- 컬럼의 개수 지정 -->
+android:orientation="horizontal"	<!-- View의 방향 지정 -->
+
+<!-- GridLayout의 View 속성 -->
+android:layout_column=""			<!-- view의 Column 지정 -->
+android:layout_row=""				<!-- view의 Row 지정 -->
+android:layout_columnSpan=""		<!-- view가 차지할 Column 수 -->
+android:layout_rowSpan=""			<!-- view가 차지할 Row 수 -->
+android:layout_columnWeight=""		<!-- view의 Column 가중치 -->
+android:layout_rowWeight=""			<!-- view의 Row 가중치 -->

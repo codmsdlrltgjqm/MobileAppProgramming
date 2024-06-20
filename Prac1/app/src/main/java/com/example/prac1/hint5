@@ -1,0 +1,52 @@
+<1. NavigationView의 메뉴 선택 리스너 작성>
+- MainActivity.kt
+
+// 좌측 상단 네비게이션의 메뉴들
+      override fun onNavigationItemSelected(item: MenuItem): Boolean {
+          when(item.itemId){
+              // itemId 값에 따라 다르게 하겠다
+              R.id.info -> {
+                  val intent = Intent(Intent.ACTION_VIEW, Uri.parse("http://www.duksung.ac.kr"))
+                  startActivity(intent)
+                  true
+              }
+              R.id.map -> {
+                 val intent = Intent(Intent.ACTION_VIEW, Uri.parse("geo:37.6513783, 127.0163402"))
+                 startActivity(intent)
+                  true
+              }
+              R.id.call -> {
+                  // 전화 앱에 전화번호 보여주는 것만
+                  val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:/119"))
+                  startActivity(intent)
+
+                  true
+              }
+          }
+          return false // 디폴트 리턴은 펄스
+      }
+
+
+- 퍼미션 설정
+      <uses-permission android:name="android.permission.READ_CONTACTS" />
+  주소록 목록 출력
+      val intent = Intent(Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI)
+      startActivity(intent)
+
+- 지도 앱 연결 val intent = Intent(Intent.ACTION_VIEW, Uri.parse("geo:37.5662952,126.9779451"))
+      getResult.launch(intent)  //getResult -> 인텐트 콜백 함수명
+- 길찾기
+val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://~"))
+      startActivity(intent)
+
+  전화 앱 연동
+  인텐트로 전화 앱 실행
+  전화 거는 기능은 퍼미션 설정해야 함
+  데이터 정보는 tel: 로 시작해야 하고, 전화번호(수신자) 명시
+      //퍼미션 설정
+      <uses-permission android:name="android.permission.CALL_PHONE" />
+      val intent = Intent(Intent.ACTION_CALL, Uri.parse("tel:02-120"))
+      startActivity(intent)  //getResult -> 인텐트 콜백 함수명
+
+
+

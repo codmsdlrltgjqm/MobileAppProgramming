@@ -1,0 +1,20 @@
+<뷰 바인딩 설정하는 법>
+1. build.gradle.kts (Module:app)
+
+viewBinding{
+    enable = true
+}
+
+추가
+
+2. MainActivity.kt
+override fun onCreate(savedInstanceState: Bundle?)함수 내 추가
+
+var binding = ActivityMainBinding.infalte(layoutInflater)
+setContentview(binding.root)
+
+<ActionBar 관련>
+- res/values/themes/themes.xml에서 .NoActionBar 삭제
+
+
+
